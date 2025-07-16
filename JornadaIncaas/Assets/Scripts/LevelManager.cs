@@ -34,11 +34,10 @@ public class LevelManager : MonoBehaviour
 
         board = new PipeTile[rows, cols];
 
-        for (int x = 0; x < rows; x++) // Use rows e cols do ScriptableObject
+        for (int x = 0; x < rows; x++)
         {
             for (int y = 0; y < cols; y++)
             {
-                // Obter os dados da peça do ScriptableObject
                 GridHolder.PipeData pipeData = currentPipeLayout.grid[x].values[y];
 
                 GameObject tileGO = Instantiate(pipeTilePrefab, new Vector3(x * tileSize, y * tileSize, 0), Quaternion.identity, boardTransform);
@@ -50,18 +49,14 @@ public class LevelManager : MonoBehaviour
                     pipeTile.gridY = y;
                     board[x, y] = pipeTile;
 
-                    // Aplicar tipo e rotação inicial da peça do ScriptableObject
+
                     pipeTile.pipeType = pipeData.pipeType;
-                    // Rotacionar para a rotação inicial definida
+
                     for (int i = 0; i < pipeData.initialRotationIndex; i++)
                     {
-                        pipeTile.RotatePipe(); // Chama o método de rotação para aplicar o estado inicial
+                        pipeTile.RotatePipe(); 
                     }
-                    // A chamada para UpdateSprite() dentro de RotatePipe() garantirá que o sprite correto seja definido.
 
-                    // Você pode querer definir pontos de início/fim aqui com base nos dados do ScriptableObject,
-                    // ou ter um sistema separado para isso. Por simplicidade, vou manter a atribuição manual
-                    // para 0,0 e rows-1, cols-1 como exemplo, mas idealmente isso também viria do GridHolder.
                     if (pipeData.pipeType == PipeType.Start)
                     {
                         pipeTile.SetIsStart(true);
@@ -84,7 +79,6 @@ public class LevelManager : MonoBehaviour
 
     public void CheckWinCondition()
     {
-        // Debug.Log("Verificando condição de vitória...");
         if (IsPathComplete())
         {
             Debug.Log("Parabéns! O puzzle foi resolvido!");
@@ -95,7 +89,7 @@ public class LevelManager : MonoBehaviour
     private bool IsPathComplete()
     {
         PipeTile startTile = null;
-        // Use os tamanhos do tabuleiro do GridHolder para a iteração
+
         int rows = currentPipeLayout.rows;
         int cols = currentPipeLayout.columns;
 
