@@ -62,8 +62,6 @@ public class PipeTile : MonoBehaviour
     {
         levelManager = FindFirstObjectByType<LevelManager>();
         UpdateSprite(); // Definir sprite inicial com base no tipo e rotação
-
-        ResetConnectionColors(); // NOVO: Define as cores padrão para as conexões no início
     }
 
     void OnMouseEnter() // Detecta se o mouse entrou no espaço da peça
@@ -91,42 +89,30 @@ public class PipeTile : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, currentRotationIndex * -90); // Rotação Z no Unity é horaria 
         UpdateSprite();
         ResetConnectionColors(); // NOVO: Redefine as cores das conexões ao rotacionar
-
-        List<int> connections = GetConnections();
-
-        foreach (int connection in connections)
-        {
-            switch (connection)
-            {
-                case 0:
-                    Debug.Log("o pipe " + gridX + ", " + gridY + " se conecta com o pipe de cima");
-                    break;
-
-                case 1:
-                    Debug.Log("o pipe " + gridX + ", " + gridY + " se conecta com o pipe da direita");
-                    break;
-
-                case 2:
-                    Debug.Log("o pipe " + gridX + ", " + gridY + " se conecta com o pipe de baixo");
-                    break;    
-
-                case 3:
-                    Debug.Log("o pipe " + gridX + ", " + gridY + " se conecta com o pipe da esquerda");
-                    break;
-            }
-        }
     }
 
     void UpdateSprite() 
     {
         switch (pipeType)
         {
-            case PipeType.Straight: spriteRenderer.sprite = straightPipeSprite; break;
-            case PipeType.Corner: spriteRenderer.sprite = cornerPipeSprite; break;
-            case PipeType.T_Junction: spriteRenderer.sprite = tJunctionSprite; break;
-            case PipeType.Cross: spriteRenderer.sprite = crossPipeSprite; break;
-            case PipeType.End: spriteRenderer.sprite = endPipeSprite; break;
-            case PipeType.Start: spriteRenderer.sprite = startPipeSprite; break;
+            case PipeType.Straight:
+                spriteRenderer.sprite = straightPipeSprite;
+                break;
+            case PipeType.Corner:
+                spriteRenderer.sprite = cornerPipeSprite;
+                break;
+            case PipeType.T_Junction:
+                spriteRenderer.sprite = tJunctionSprite;
+                break;
+            case PipeType.Cross:
+                spriteRenderer.sprite = crossPipeSprite;
+                break;
+            case PipeType.End:
+                spriteRenderer.sprite = endPipeSprite;
+                break;
+            case PipeType.Start:
+                spriteRenderer.sprite = startPipeSprite;
+                break;
         }
     }
 

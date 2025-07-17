@@ -13,26 +13,14 @@ MonoBehaviour:
   m_Name: Example1
   m_EditorClassIdentifier: 
   rows: 3
-  columns: 3
+  columns: 1
   grid:
   - values:
-    - pipeType: 1
-      initialRotationIndex: 0
-    - pipeType: 1
-      initialRotationIndex: 0
-    - pipeType: 1
-      initialRotationIndex: 0
+    - pipeType: 5
+      initialRotationIndex: 2
   - values:
     - pipeType: 0
-      initialRotationIndex: 0
-    - pipeType: 2
-      initialRotationIndex: 0
-    - pipeType: 4
-      initialRotationIndex: 0
+      initialRotationIndex: 1
   - values:
-    - pipeType: 5
-      initialRotationIndex: 0
-    - pipeType: 3
-      initialRotationIndex: 0
-    - pipeType: 1
-      initialRotationIndex: 0
+    - pipeType: 4
+      initialRotationIndex: 3

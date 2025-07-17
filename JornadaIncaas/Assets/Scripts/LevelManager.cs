@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
 
     private PipeTile[,] board; // Matriz para armazenar as peças de tubo
 
-    void Start()
+    public void StartLevel()
     {
         if (currentPipeLayout == null)
         {
@@ -21,10 +21,7 @@ public class LevelManager : MonoBehaviour
         }
 
         InitializeBoard();
-        // GeneratePuzzle() não será mais chamado aqui, pois o layout vem do ScriptableObject
-        // A lógica de "puzzle" (rotação inicial) será definida no GridHolder.
-        // Podemos adicionar uma chamada para CheckWinCondition() aqui se quisermos verificar o estado inicial.
-        CheckWinCondition(); // Para garantir que o estado inicial do puzzle é verificado (útil para debug)
+        CheckWinCondition();
     }
 
     void InitializeBoard()
@@ -73,7 +70,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        Camera.main.transform.position = new Vector3((rows - 1) * tileSize / 2, (cols - 1) * tileSize / 2, -10f);
+        boardTransform.transform.position = new Vector3(-(rows - 1) * tileSize / 2, -(cols - 1) * tileSize / 2, 0);
         // Camera.main.orthographicSize = (Mathf.Max(rows, cols) * tileSize) / 2 + 1; // Ajuste para o maior lado
     }
 
@@ -89,7 +86,7 @@ public class LevelManager : MonoBehaviour
     private bool IsPathComplete()
     {
         PipeTile startTile = null;
-
+        // Use os tamanhos do tabuleiro do GridHolder para a iteração
         int rows = currentPipeLayout.rows;
         int cols = currentPipeLayout.columns;
 
