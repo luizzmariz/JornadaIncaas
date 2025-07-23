@@ -15,7 +15,7 @@ public enum PipeType
 public class PipeTile : MonoBehaviour
 {
     // Renderizador principal do sprite do tubo
-    public SpriteRenderer spriteRenderer; 
+    public SpriteRenderer spriteRenderer;
     public SpriteRenderer tileSpriteRenderer;
 
     // NOVO: Renderizadores para as conexões (portas)
@@ -49,6 +49,8 @@ public class PipeTile : MonoBehaviour
     public Color32 waterFlowColor = new Color32(0, 100, 255, 255); // Cor para o fluxo de água (azul vibrante)
     public Color32 connectionDefaultColor; // Cor padrão das conexões
 
+    bool pipeIsActive = false;
+
 
     void Awake()
     {
@@ -66,20 +68,29 @@ public class PipeTile : MonoBehaviour
 
     void OnMouseEnter() // Detecta se o mouse entrou no espaço da peça
     {
-        tileSpriteRenderer.color = highlightColor;
+        if (pipeIsActive)
+        {
+            tileSpriteRenderer.color = highlightColor;
+        }
     }
 
     void OnMouseExit() // Detecta se o mouse saiu do espaço da peça
     {
-        tileSpriteRenderer.color = originalColor;
+        if (pipeIsActive)
+        {
+        tileSpriteRenderer.color = originalColor;    
+        }
     }
 
     void OnMouseDown() // Detecta clique do mouse na peça
     {
-        RotatePipe();
-        if (levelManager != null) 
+        if (pipeIsActive)
         {
-            levelManager.CheckWinCondition(); 
+            RotatePipe();
+            if (levelManager != null)
+            {
+                levelManager.CheckWinCondition();
+            }    
         }
     }
 
@@ -91,7 +102,7 @@ public class PipeTile : MonoBehaviour
         ResetConnectionColors(); // NOVO: Redefine as cores das conexões ao rotacionar
     }
 
-    void UpdateSprite() 
+    void UpdateSprite()
     {
         switch (pipeType)
         {
@@ -118,10 +129,10 @@ public class PipeTile : MonoBehaviour
 
     // Retorna as conexões ativas do tubo na rotação atual
     // Conexões: 0=Up, 1=Right, 2=Down, 3=Left 
-    public List<int> GetConnections() 
+    public List<int> GetConnections()
     {
-        List<int> connections = new List<int>(); 
-        switch (pipeType)  
+        List<int> connections = new List<int>();
+        switch (pipeType)
         {
             case PipeType.Straight:
                 if (currentRotationIndex % 2 == 0)
@@ -134,40 +145,40 @@ public class PipeTile : MonoBehaviour
                     connections.Add(0); // Up 
                     connections.Add(2); // Down 
                 }
-                break; 
-            case PipeType.Corner: 
+                break;
+            case PipeType.Corner:
                 if (currentRotationIndex == 0) { connections.Add(0); connections.Add(1); }
-                else if (currentRotationIndex == 1) { connections.Add(1); connections.Add(2); } 
-                else if (currentRotationIndex == 2) { connections.Add(2); connections.Add(3); } 
-                else if (currentRotationIndex == 3) { connections.Add(3); connections.Add(0); } 
+                else if (currentRotationIndex == 1) { connections.Add(1); connections.Add(2); }
+                else if (currentRotationIndex == 2) { connections.Add(2); connections.Add(3); }
+                else if (currentRotationIndex == 3) { connections.Add(3); connections.Add(0); }
                 break;
-            case PipeType.T_Junction: 
-                if (currentRotationIndex == 0) { connections.Add(0); connections.Add(1); connections.Add(3); } 
+            case PipeType.T_Junction:
+                if (currentRotationIndex == 0) { connections.Add(0); connections.Add(1); connections.Add(3); }
                 else if (currentRotationIndex == 1) { connections.Add(0); connections.Add(1); connections.Add(2); }
-                else if (currentRotationIndex == 2) { connections.Add(1); connections.Add(2); connections.Add(3); } 
-                else if (currentRotationIndex == 3) { connections.Add(2); connections.Add(3); connections.Add(0); } 
+                else if (currentRotationIndex == 2) { connections.Add(1); connections.Add(2); connections.Add(3); }
+                else if (currentRotationIndex == 3) { connections.Add(2); connections.Add(3); connections.Add(0); }
                 break;
-            case PipeType.Cross: 
+            case PipeType.Cross:
                 connections.Add(0); connections.Add(1); connections.Add(2); connections.Add(3); // Todas as 4 direções
-                break; 
-            case PipeType.End: 
-            case PipeType.Start: 
+                break;
+            case PipeType.End:
+            case PipeType.Start:
                 connections.Add(currentRotationIndex); // Ex: 0=Up, 1=Right, etc. 
-                break; 
+                break;
         }
         return connections;
     }
 
     // Determina se este tile se conecta a um vizinho específico 
-    public bool ConnectsTo(PipeTile neighbor, int connectionDirection) 
+    public bool ConnectsTo(PipeTile neighbor, int connectionDirection)
     {
         List<int> thisConnections = GetConnections();
         if (!thisConnections.Contains(connectionDirection)) return false;
 
-        int neighborConnectionDirection = (connectionDirection + 2) % 4; 
+        int neighborConnectionDirection = (connectionDirection + 2) % 4;
         List<int> neighborConnections = neighbor.GetConnections();
 
-        return neighborConnections.Contains(neighborConnectionDirection); 
+        return neighborConnections.Contains(neighborConnectionDirection);
     }
 
     // Retorna a posição do vizinho para uma dada direção de conexão 
@@ -192,9 +203,9 @@ public class PipeTile : MonoBehaviour
         }
     }
 
-    public void SetIsEnd(bool value) 
+    public void SetIsEnd(bool value)
     {
-        isEnd = value; 
+        isEnd = value;
         if (isEnd)
         {
             spriteRenderer.color = Color.red;
@@ -221,32 +232,37 @@ public class PipeTile : MonoBehaviour
         {
             List<int> activeConnections = GetConnections(); // Obtém as conexões ativas do tipo de tubo e rotação
 
-            switch (pipeType)  
+            switch (pipeType)
             {
                 case PipeType.Straight:
                     connectionRightRenderer.color = waterFlowColor;
                     connectionLeftRenderer.color = waterFlowColor;
-                    break; 
-                case PipeType.Corner: 
+                    break;
+                case PipeType.Corner:
                     connectionUpRenderer.color = waterFlowColor;
                     connectionRightRenderer.color = waterFlowColor;
                     break;
-                case PipeType.T_Junction: 
+                case PipeType.T_Junction:
                     connectionUpRenderer.color = waterFlowColor;
                     connectionRightRenderer.color = waterFlowColor;
                     connectionLeftRenderer.color = waterFlowColor;
                     break;
-                case PipeType.Cross: 
+                case PipeType.Cross:
                     connectionUpRenderer.color = waterFlowColor;
                     connectionRightRenderer.color = waterFlowColor;
                     connectionDownRenderer.color = waterFlowColor;
                     connectionLeftRenderer.color = waterFlowColor;
-                    break; 
-                case PipeType.End: 
-                case PipeType.Start: 
+                    break;
+                case PipeType.End:
+                case PipeType.Start:
                     connectionUpRenderer.color = waterFlowColor;
-                    break; 
+                    break;
             }
         }
+    }
+
+    public void ActivatePipe()
+    {
+        pipeIsActive = true;
     }
 }

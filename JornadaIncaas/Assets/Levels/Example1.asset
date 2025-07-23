@@ -17,10 +17,10 @@ MonoBehaviour:
   grid:
   - values:
     - pipeType: 5
-      initialRotationIndex: 2
+      initialRotationIndex: 3
   - values:
     - pipeType: 0
       initialRotationIndex: 1
   - values:
     - pipeType: 4
-      initialRotationIndex: 3
+      initialRotationIndex: 2

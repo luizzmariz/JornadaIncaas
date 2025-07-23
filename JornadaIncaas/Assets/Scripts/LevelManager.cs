@@ -8,19 +8,20 @@ public class LevelManager : MonoBehaviour
     public Transform boardTransform;
 
     [Header("Level Configuration")]
-    public GridHolder currentPipeLayout; // Referência ao seu ScriptableObject GridHolder
+    public List<GridHolder> pipeLayouts = new List<GridHolder>();
+    private GridHolder currentPipeLayout;
+    int levelIndex = 0;
 
-    private PipeTile[,] board; // Matriz para armazenar as peças de tubo
+    private PipeTile[,] board;
 
     public void StartLevel()
     {
-        if (currentPipeLayout == null)
-        {
-            Debug.LogError("Current Pipe Layout (GridHolder) não está definido no LevelManager. Por favor, atribua um.");
-            return;
-        }
+        currentPipeLayout = pipeLayouts[levelIndex];
 
         InitializeBoard();
+
+        ActiveBoardTiles();
+
         CheckWinCondition();
     }
 
@@ -74,12 +75,20 @@ public class LevelManager : MonoBehaviour
         // Camera.main.orthographicSize = (Mathf.Max(rows, cols) * tileSize) / 2 + 1; // Ajuste para o maior lado
     }
 
+    void ActiveBoardTiles()
+    {
+        foreach (PipeTile tile in board)
+        {
+            tile.GetComponent<Animator>().SetTrigger("FadeIn");
+        }
+    }
+
     public void CheckWinCondition()
     {
         if (IsPathComplete())
         {
-            Debug.Log("Parabéns! O puzzle foi resolvido!");
-            // Adicionar lógica de vitória aqui
+            levelIndex++;
+            GameManager.instance.FinishLevel(levelIndex);
         }
     }
 
@@ -159,7 +168,6 @@ public class LevelManager : MonoBehaviour
         return endReached;
     }
 
-    // Updated IsValidPosition to take rows and cols as parameters
     private bool IsValidPosition(int x, int y, int rows, int cols)
     {
         return x >= 0 && x < rows && y >= 0 && y < cols;
