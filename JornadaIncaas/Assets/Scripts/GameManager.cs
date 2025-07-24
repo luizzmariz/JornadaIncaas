@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using FMODUnity;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,9 +9,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] Animator logoAnimator;
     [SerializeField] Animator manAnimator;
     [SerializeField] Animator tjrnAnimator;
-    [SerializeField] AudioSource introAudio;
+    [SerializeField] StudioEventEmitter introAudioEvent;
 
     LevelManager levelManager;
+
+    bool debug1 = false;
+    
 
     void Awake()
     {
@@ -31,6 +35,14 @@ public class GameManager : MonoBehaviour
         logoAnimator.SetTrigger("StartLogo1");
     }
 
+    void Update()
+    {
+        if (debug1)
+        {
+            Debug.Log(introAudioEvent.IsPlaying());
+        }
+    }
+
     public void AnimationTriggered(string trigger)
     {
         switch (trigger)
@@ -40,7 +52,8 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "StartLogo2":
-                // introAudio.Play();
+                introAudioEvent.Play();
+                debug1 = true;
                 manAnimator.SetTrigger("NextStep");
                 tjrnAnimator.SetTrigger("NextStep");
                 StartCoroutine(IDK());
